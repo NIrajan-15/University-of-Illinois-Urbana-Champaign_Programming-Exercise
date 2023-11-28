@@ -45,9 +45,13 @@ class TrainingManager:
         - data (list/dict): Data to be written to the file.
         - output_file (str): Name of the output JSON file.
         """
-        with open(output_file, 'w') as file:
-            # write data to the file
-            json.dump(data, file, indent=2)
+        try:
+            with open(output_file, 'w') as file:
+                # write data to the file
+                json.dump(data, file, indent=2)
+        except Exception as e:
+            # Handle the exception, e.g., print an error message or log the issue
+            print(f"Error writing to JSON file: {e}")
 
 
     def __init__(self, training_file):
@@ -70,8 +74,14 @@ class TrainingManager:
         Returns:
         list: List of Person objects.
         """
-        with open(training_file, 'r') as file:
-            data = json.load(file)
+        try:
+            with open(training_file, 'r') as file:
+                data = json.load(file)
+        except (json.JSONDecodeError, FileNotFoundError) as e:
+            # Handle the exception, e.g., print an error message or log the issue
+            print(f"Error loading JSON data: {e}")
+            # Optionally, you can raise the exception again or return a default value
+            return []
 
         return [Person.from_dict(person_data) for person_data in data]
 
